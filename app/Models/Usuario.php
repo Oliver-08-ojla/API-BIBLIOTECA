@@ -10,4 +10,7 @@ class Usuario extends Model
     use HasFactory;
 
     public $timestamps=false;
+
+    protected $table='usuarios';
+    protected $fillable=['fechaPrestamo','fechaDevolucion','fechaRealDevolucion','libro_id','cliente_id'];
 }
