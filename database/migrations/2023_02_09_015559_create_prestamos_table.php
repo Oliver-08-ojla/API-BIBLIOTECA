@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->date('fechaPrestamo');
             $table->date('fechaDevolucion');
-            $table->date('fechaRealDevolucion');
+            $table->date('fechaRealDevolucion')->nullable();
             $table->foreignId('libro_id')
             ->constrained('libros')
             ->cascadeOnUpdate()

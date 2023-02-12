@@ -19,7 +19,6 @@ class PrestamoSeeder extends Seeder
         Prestamo::create([
             'fechaPrestamo'=>'2022-02-08',
             'fechaDevolucion'=>'2022-02-15',
-            'fechaRealDevolucion'=>'2022-02-20',
             'libro_id'=>'1',
             'cliente_id'=>'1',
             'usuario_id'=>'2'

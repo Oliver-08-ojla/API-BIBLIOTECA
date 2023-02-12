@@ -13,4 +13,8 @@ class Cliente extends Model
 
     protected $table='clientes';
     protected $fillable=['nombre','apellido','cedula','correo','telefono'];
+    
+    public function Prestamo(){
+        return $this->hasMany(Prestamo::class);
+    }
 }

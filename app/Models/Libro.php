@@ -12,5 +12,9 @@ class Libro extends Model
     public $timestamps=false;
 
     protected $table='libros';
-    protected $fillable=['titulo','autor','image'];
+    protected $fillable=['titulo','autor','url_libro','image_id'];
+
+    public function Prestamo(){
+        return $this->hasMany(Prestamo::class);
+    }
 }

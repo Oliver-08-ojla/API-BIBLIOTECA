@@ -11,5 +11,10 @@ class Rol extends Model
     
     public $timestamps=false;
 
-    
+    protected $table = 'rols';
+    protected $fillable=['nombre'];
+
+    public function Usuario(){
+        return $this->hasMany(Usuario::class);
+    }
 }

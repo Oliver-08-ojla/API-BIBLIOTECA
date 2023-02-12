@@ -12,5 +12,18 @@ class Prestamo extends Model
     public $timestamps=false;
 
     protected $table='prestamos';
-    protected $fillable=['nombre','apellido','cedula','correo','telefono'];
+    protected $fillable=['fechaPrestamo','fechaDevolucion','fechaRealDevolucion','libro_id','cliente_id','usuario_id'];
+
+    public function Cliente(){
+        return $this->belongsTo(Cliente::class);
+    }
+
+    public function Libro(){
+        return $this->belongsTo(Libro::class);
+    }
+
+    public function Usuario(){
+        return $this->belongsTo(Usuario::class);
+    }
+
 }
