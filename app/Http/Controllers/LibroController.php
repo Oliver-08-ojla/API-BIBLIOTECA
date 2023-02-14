@@ -12,44 +12,20 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class LibroController extends Controller
 {
 
-
-    public $rules = [
-        'titulo' => 'required|unique:libros|regex:"^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$"',
-        'autor' => 'required|regex:"^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$"',
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ];
-    public $messages = [
-        'titulo.required' => 'El titulo tiene que estar llenado',
-        'titulo.unique' => 'El titulo ya esta en uso',
-        'titulo.regex' => 'Solo se permiten caracteres validos',
-
-        'autor.required' => 'El autor tiene que estar llenado',
-        'autor.regex' => 'Solo se permiten caracteres validos',
-
-        'image.required' => 'Se requiere una imagen',
-        'image.image' => 'Solo se permite imagenes',
-        'image.mimes' => 'Tipo de imagen no valido',
-    ];
-
-
     public function index()
     {
         $libros = Libro::all();
 
-        return response()->json([
-            'libros' => $libros
-        ]);
+        return response()->json($libros);
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            return response()->json([
-                'message' => $messages
-            ], 500);
-        }
+        $validData = $request->validate([
+            'titulo' => 'required|unique:libros',
+            'autor' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|'
+        ]);
 
         $file = request()->file('image');
         $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'libros']);
@@ -58,8 +34,8 @@ class LibroController extends Controller
 
         Libro::create([
 
-            'titulo' => $request->titulo,
-            'autor' => $request->autor,
+            'titulo' => $validData['titulo'],
+            'autor' => $validData['autor'],
             'url_libro' => $url,
             'image_id' => $public_id
 
