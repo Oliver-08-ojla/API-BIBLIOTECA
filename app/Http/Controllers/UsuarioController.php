@@ -14,19 +14,19 @@ use Illuminate\Support\Facades\Validator;
 class UsuarioController extends Controller
 {
 
-    public $rulesUsuario= [
+    public $rulesUsuario = [
 
-        'nombre'=>'required|string|max:255|min:2|regex:/^[\pL\s]+$/u',
-        'apellido'=>'required|max:255|min:2|regex:/^[\pL\s]+$/u',
-        'cedula'=>'required|numeric|digits:10|unique:usuarios',
-        'correo'=>'required|email|unique:usuarios',
-        'password'=>'required|min:8'
-        
+        'nombre' => 'required|string|max:255|min:2|regex:/^[\pL\s]+$/u',
+        'apellido' => 'required|max:255|min:2|regex:/^[\pL\s]+$/u',
+        'cedula' => 'required|numeric|digits:10|unique:usuarios',
+        'correo' => 'required|email|unique:usuarios',
+        'password' => 'required|min:8'
+
 
     ];
 
 
-    public $messages=[
+    public $messages = [
 
         'nombre.required' => 'Se requiere el nombre del usuario',
         'nombre.string' => 'Se requiere se permiten',
@@ -45,78 +45,70 @@ class UsuarioController extends Controller
         'correo.required' => 'Se requiere el correo electronico del usuario',
         'correo.email' => 'Se requiere el correo electronico del usuario en formato email',
         'correo.unique' => 'No deben de existir dos direcciones de correo electronico iguales',
-        'password.required'=>'Se requiere password',
-        'password.min'=>'Password tiene que tener minimo 8 caracteres',
-        
+        'password.required' => 'Se requiere password',
+        'password.min' => 'Password tiene que tener minimo 8 caracteres',
+
     ];
-    
+
 
 
     public function register(Request $request)
     {
-        $validator=Validator::make($request->all(),$this->rulesUsuario,$this->messages);
-        if($validator -> fails()){
-            $messages=$validator->messages();
+        $validator = Validator::make($request->all(), $this->rulesUsuario, $this->messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
             return response()->json([
-                'messages'=>$messages
-            ],500);
-        } 
+                'messages' => $messages
+            ], 500);
+        }
+        $usuario = new Usuario();
+        $usuario->nombre = $request->nombre;
+        $usuario->apellido = $request->apellido;
+        $usuario->cedula = $request->cedula;
+        $usuario->correo = $request->correo;
+        $usuario->password = Hash::make($request->password);
+        $usuario->rol_id = 2;
+        $usuario->save();
 
-    
-       $usuario=new Usuario();
-       $usuario->nombre=$request->nombre;
-       $usuario->apellido=$request->apellido;
-       $usuario->cedula=$request->cedula;
-       $usuario->correo=$request->correo;
-       $usuario->password=Hash::make($request->password);
-       $usuario->rol_id=2;
-       $usuario->save();
-
-       return response()->json([
-        'messages'=>"Registro exitoso"
-    ]);
+        return response()->json(['message' => "Registrado"],200);
     }
 
     public function login(Request $request)
     {
 
-        $usuario=Usuario::where("correo", "=", $request->correo)->first();
+        $usuario = Usuario::where("correo", "=", $request->correo)->first();
 
-        if(isset($usuario->id)){
-            if(Hash::check($request->password, $usuario->password)){
+        if (isset($usuario->id)) {
+            if (Hash::check($request->password, $usuario->password)) {
                 $token = $usuario->createToken("auth_token")->plainTextToken;
                 return response()->json([
-                    'messages'=>"Usuario logueado correctamente",
-                    "access_token"=>$token
-                 ]);
-            }else 
-                 return response()->json([
-                    'messages'=>"Password incorrecta"
-                 ]);
-        }else{
-            return response()->json([
-                'messages'=>"Usuario no registrado"
-            ]);
+                    'res' => 'ok',
+                    'message' => "Credenciales válidas",
+                    "access_token" => $token
+                ]);
+            } else
+                return response()->json(['message' => "Password incorrecta"],200);
+        } else {
+            return response()->json(['message' => "Usuario no registrado"],200);
         }
-            
     }
 
     public function userProfile()
     {
         return response()->json([
-            'messages'=>"Acerca del perfil de usuario",
-            'data'=>auth()->user(),
-            'rol'=>auth::user()->Rol->nombre
-         ]);
+            'messages' => "Acerca del perfil de usuario",
+            'data' => auth()->user(),
+            'rol' => auth::user()->Rol->nombre
+        ]);
     }
-   
+
 
     public function logout()
     {
-        auth()->user()->tokens()->delete();
+        /* auth()->user()->tokens()->delete();
         return response()->json([
             'messages'=>"Cierre de sesion",
 
-         ]);
+         ]); */
     }
 }

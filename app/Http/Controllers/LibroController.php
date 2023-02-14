@@ -11,14 +11,14 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class LibroController extends Controller
 {
-    
-    
-    public $rules= [
+
+
+    public $rules = [
         'titulo' => 'required|unique:libros|regex:"^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$"',
         'autor' => 'required|regex:"^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$"',
         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     ];
-    public $messages=[
+    public $messages = [
         'titulo.required' => 'El titulo tiene que estar llenado',
         'titulo.unique' => 'El titulo ya esta en uso',
         'titulo.regex' => 'Solo se permiten caracteres validos',
@@ -34,47 +34,38 @@ class LibroController extends Controller
 
     public function index()
     {
-        $libros=Libro::all();
+        $libros = Libro::all();
 
         return response()->json([
-            'libros'=>$libros
+            'libros' => $libros
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        $validator=Validator::make($request->all(),$this->rules,$this->messages);
-        if($validator -> fails()){
-            $messages=$validator->messages();
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        if ($validator->fails()) {
+            $messages = $validator->messages();
             return response()->json([
-                'messages'=>$messages
-            ],500);
-        } 
+                'message' => $messages
+            ], 500);
+        }
 
-          $file = request()->file('image');
-              $obj = Cloudinary::upload($file->getRealPath(),['folder'=>'libros']);
-              $public_id = $obj->getPublicId();
-              $url = $obj->getSecurePath();
+        $file = request()->file('image');
+        $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'libros']);
+        $public_id = $obj->getPublicId();
+        $url = $obj->getSecurePath();
 
-              Libro::create([
+        Libro::create([
 
-                'titulo'=>$request->titulo,
-                'autor'=>$request->autor,
-                'url_libro'=>$url,
-                'image_id'=>$public_id
+            'titulo' => $request->titulo,
+            'autor' => $request->autor,
+            'url_libro' => $url,
+            'image_id' => $public_id
 
-              ]);
- 
-        return response()->json([
-            'messages'=>"Se creo correctamente"
         ]);
 
+        return response()->json(['message' => "Registrado"]);
     }
 
     /**
@@ -85,10 +76,10 @@ class LibroController extends Controller
      */
     public function show($id)
     {
-        $libro= Libro::find($id);
+        $libro = Libro::find($id);
 
         return response()->json([
-            'libro'=>$libro
+            'libro' => $libro
         ]);
     }
 
@@ -107,23 +98,23 @@ class LibroController extends Controller
         $url = $libro->url;
         $public_id = $libro->image_id;
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             Cloudinary::destroy($public_id);
             $file = request()->file('image');
-            $obj = Cloudinary::upload($file->getRealPath(),['folder'=>'libros']);
+            $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'libros']);
             $url = $obj->getSecurePath();
             $public_id = $obj->getPublicId();
         }
 
         $libro->update([
-            "titulo"=>$request->titulo,
-            "autor"=>$request->autor,
-            "url_libro"=>$url,
-            "image_id"=>$public_id
+            "titulo" => $request->titulo,
+            "autor" => $request->autor,
+            "url_libro" => $url,
+            "image_id" => $public_id
         ]);
 
         return response()->json([
-            'messages'=>"Se actualizo correctamente"
+            'messages' => "Se actualizo correctamente"
         ]);
     }
 
@@ -133,7 +124,7 @@ class LibroController extends Controller
      * @param  \App\Models\Libro  $libro
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         $libro = Libro::find($id);
         $public_id = $libro->image_id;
@@ -141,7 +132,7 @@ class LibroController extends Controller
         Libro::destroy($id);
 
         return response()->json([
-            'messages'=>"Se elimino correctamente"
+            'messages' => "Se elimino correctamente"
         ]);
     }
 }

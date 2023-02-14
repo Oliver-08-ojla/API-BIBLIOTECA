@@ -25,18 +25,6 @@ class UsuarioSeeder extends Seeder
             
 
         ]);
-
-        Usuario::create([
-            'nombre'=>'chala',
-            'apellido'=>'admin',
-            'cedula'=>'1313897711',
-            'correo'=>'chalita@hotmail.com',
-            'password'=>bcrypt('admin123'),
-            'rol_id'=>'2'
-            
-
-        ]);
-
         
     }
 }

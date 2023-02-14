@@ -24,38 +24,29 @@ use Illuminate\Support\Facades\Route;
 Route::group(
     ['middleware' => ["auth:sanctum"]],
     function () {
-
         Route::controller(UsuarioController::class)->group(function () {
-
-
             Route::get('userProfile', 'userProfile');
             Route::post('logout', 'logout');
         });
-
-        Route::controller(PrestamoController::class)->group(function(){
-
+        Route::controller(PrestamoController::class)->group(function () {
             Route::get('prestamos', 'index');
-             Route::get('prestamos/{id}', 'show');
-             Route::post('prestamos', 'store');
-             Route::post('devolver/{id}', 'devolverLibro');
-             Route::get('listado', 'listado');
-             Route::get('listadoUC', 'listadoUC');
-         });
+            Route::get('prestamos/{id}', 'show');
+            Route::post('prestamos', 'store');
+            Route::post('devolver/{id}', 'devolverLibro');
+            Route::get('listado', 'listado');
+            Route::get('listadoUC', 'listadoUC');
+        });
     }
 
 );
 
 Route::controller(UsuarioController::class)->group(function () {
-
-
     Route::post('register', 'register');
     Route::post('login', 'login');
 });
 
 
-
 Route::controller(LibroController::class)->group(function () {
-
     Route::get('libros', 'index');
     Route::get('libros/{id}', 'show');
     Route::post('libros', 'store');
@@ -72,5 +63,3 @@ Route::controller(LibroController::class)->group(function () {
     Route::delete('clientes/{id}', 'destroy');
 });
 */
-
-
