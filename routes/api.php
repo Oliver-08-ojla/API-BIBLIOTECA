@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/registro', [UsuarioController::class, 'register']);
+Route::post('/register', [UsuarioController::class, 'register']);
 Route::post('/login', [UsuarioController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group( function () {
