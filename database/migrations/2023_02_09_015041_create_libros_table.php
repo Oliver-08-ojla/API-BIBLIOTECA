@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('titulo');
             $table->string('autor');
-            $table->string('url_libro');
+            $table->longText('url_libro');
             $table->boolean('estado')->default(true);
             $table->string('image_id');
   

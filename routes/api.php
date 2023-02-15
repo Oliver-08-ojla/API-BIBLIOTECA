@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\LibroController;
+use App\Http\Controllers\LibrosController;
 use App\Http\Controllers\PrestamoController;
 use App\Http\Controllers\UsuarioController;
 use App\Models\Libro;
@@ -19,9 +20,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/registro', [UsuarioController::class, 'register']);
+Route::post('/login', [UsuarioController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group( function () {
+});
+Route::resource('libros', LibroController::class);
+Route::resource('clientes', ClienteController::class);
 
 
-Route::group(
+/* Route::group(
     ['middleware' => ["auth:sanctum"]],
     function () {
         Route::controller(UsuarioController::class)->group(function () {
@@ -36,6 +44,7 @@ Route::group(
             Route::get('listado', 'listado');
             Route::get('listadoUC', 'listadoUC');
         });
+        
     }
 
 );
@@ -50,16 +59,16 @@ Route::controller(LibroController::class)->group(function () {
     Route::get('libros', 'index');
     Route::get('libros/{id}', 'show');
     Route::post('libros', 'store');
-    Route::post('libros/{id}', 'update');
+    Route::put('libros/{id}', 'update');
     Route::delete('libros/{id}', 'destroy');
 });
 
-/* Route::controller(ClienteController::class)->group(function(){
+Route::controller(ClienteController::class)->group(function(){
 
     Route::get('clientes', 'index');
     Route::get('clientes/{id}', 'show');
     Route::post('clientes', 'store');
     Route::post('clientes/{id}', 'update');
     Route::delete('clientes/{id}', 'destroy');
-});
-*/
+}); */
+

@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LibroRequest;
 use App\Models\Libro;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
@@ -31,6 +29,7 @@ class LibroController extends Controller
         $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'libros']);
         $public_id = $obj->getPublicId();
         $url = $obj->getSecurePath();
+        
 
         Libro::create([
 
@@ -44,12 +43,6 @@ class LibroController extends Controller
         return response()->json(['message' => "Registrado"]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Libro  $libro
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $libro = Libro::find($id);
@@ -59,23 +52,20 @@ class LibroController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Libro  $libro
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request,  $id)
+   
+    public function update(Request $request, $id)
     {
+        
         Libro::find($id)->update($request->all());
-
+        
         $libro = Libro::find($id);
-        $url = $libro->url;
+        
+        $url = $libro->url_libro;
         $public_id = $libro->image_id;
 
         if ($request->hasFile('image')) {
             Cloudinary::destroy($public_id);
+            
             $file = request()->file('image');
             $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'libros']);
             $url = $obj->getSecurePath();
@@ -87,11 +77,9 @@ class LibroController extends Controller
             "autor" => $request->autor,
             "url_libro" => $url,
             "image_id" => $public_id
-        ]);
+        ]); 
 
-        return response()->json([
-            'messages' => "Se actualizo correctamente"
-        ]);
+        return response()->json(['message'=>'Actualizado'],200);
     }
 
     /**
@@ -108,7 +96,7 @@ class LibroController extends Controller
         Libro::destroy($id);
 
         return response()->json([
-            'messages' => "Se elimino correctamente"
-        ]);
+            'message' => "Eliminado"
+        ],200);
     }
 }
