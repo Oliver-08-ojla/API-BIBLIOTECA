@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rol;
 use Illuminate\Http\Request;
 
 use App\Models\Usuario;
@@ -81,10 +82,13 @@ class UsuarioController extends Controller
         if (isset($usuario->id)) {
             if (Hash::check($request->password, $usuario->password)) {
                 $token = $usuario->createToken("auth_token")->plainTextToken;
+                $rol = Rol::find($usuario->rol_id);
                 return response()->json([
                     'res' => 'ok',
                     'message' => "Credenciales válidas",
-                    "access_token" => $token
+                    "access_token" => $token,
+                    "usuario" => $usuario,
+                    "rol" => $rol
                 ]);
             } else
                 return response()->json(['message' => "Password incorrecta"],200);

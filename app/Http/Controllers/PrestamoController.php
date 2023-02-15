@@ -7,13 +7,14 @@ use App\Models\Libro;
 use App\Models\Prestamo;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
 class PrestamoController extends Controller
 {
-    
-    public $rulesPrestamo=[
+
+    /*  public $rulesPrestamo=[
         'fechaPrestamo' => 'required|date_format:Y-m-d',
         'fechaDevolucion' => 'required|date_format:Y-m-d|after:fechaPrestamo',
         'fechaRealDevolucion' => 'date_format:Y-m-d|after_or_equal:fechaDevolucion'
@@ -66,25 +67,21 @@ class PrestamoController extends Controller
         'telefono.unique' => 'No deben de existir dos numeros de telefono iguales',
 
     ];
+ */
 
-   
 
-
-    
     public function index()
     {
-       $prestamo=Prestamo::with('Libro','Cliente','Usuario')->get();
+        $prestamo = Prestamo::with('Libro', 'Cliente', 'Usuario')->get();
 
-       return response()->json([
-        'prestamos'=>$prestamo
-    ]);
-       
-
+        return response()->json([
+            'prestamos' => $prestamo
+        ]);
     }
 
     public function store(Request $request)
     {
-        $validator=Validator::make($request->all(),$this->rulesCliente,$this->messages);
+        /* $validator=Validator::make($request->all(),$this->rulesCliente,$this->messages);
         if($validator -> fails()){
             $messages=$validator->messages();
             return response()->json([
@@ -124,78 +121,102 @@ class PrestamoController extends Controller
 
         $prestamo->fechaPrestamo=$request->fechaPrestamo;
         $prestamo->fechaDevolucion=$request->fechaDevolucion;
-        $prestamo->save();
+        $prestamo->save(); */
+        //return response()->json($request);
+        $validData = $request->validate([
 
-        return response()->json([
-            'message'=>'Se presto correctamente'
+            'fechaDevolucion' => 'required',
+            'fechaPrestamo' => 'required',
+            'libro_id' => 'required',
+            'usuario_id' => 'required',
+            
+        ]);
+        $pres = Prestamo::create([
+
+            'fechaDevolucion' => $validData['fechaDevolucion'],
+            'fechaPrestamo' => $validData['fechaPrestamo'],
+            'usuario_id' => $validData['libro_id'],
+            'libro_id' => $validData['usuario_id'],
+            'isBorrowed' => true,
+            'isReturn' => false,
         ]);
 
+        return response()->json($pres);
     }
+
+    public function bookLend($id)
+    {
+
+        $prestamo = Prestamo::with('Libro')
+            ->where('usuario_id', '=', $id)->get();
+
+        return response()->json($prestamo);
+    }
+
+
 
     public function show($id)
     {
-        $prestamo=Prestamo::with('Libro','Cliente','Usuario')->where('id','=',$id)->get();
+        $prestamo = Prestamo::with('Libro', 'Cliente', 'Usuario')->where('id', '=', $id)->get();
 
         return response()->json([
-         'prestamos'=>$prestamo
-     ]);
+            'prestamos' => $prestamo
+        ]);
     }
 
     public function devolverLibro(Request $request, $id)
-{
-    $validator=Validator::make($request->only('fechaRealDevolucion'),$this->rulesPrestamo,$this->messagesU);
-    if($validator -> fails()){
-        $messagesU=$validator->messages();
-        return response()->json([
-            'messages'=>$messagesU
-        ],500);
-    } 
+    {
+        /* $validator = Validator::make($request->only('fechaRealDevolucion'), $this->rulesPrestamo, $this->messagesU);
+        if ($validator->fails()) {
+            $messagesU = $validator->messages();
+            return response()->json([
+                'messages' => $messagesU
+            ], 500);
+        }
 
-    $libro = Libro::findOrFail($id);
-    $libro->estado= true;
-    $libro->save();
+        $libro = Libro::findOrFail($id);
+        $libro->estado = true;
+        $libro->save();
 
-    $prestamo=Prestamo::where('libro_id','=',$id)->first();
+        $prestamo = Prestamo::where('libro_id', '=', $id)->first();
 
-    $prestamo->fechaRealDevolucion=$request->fechaRealDevolucion;
-    $prestamo->save();
-
-    return response()->json([
-        'message' => 'Libro devuelto con éxito'
-    ]);
-}
-
-public function listado(){
-
-$prestamo=Libro::with('Prestamo.Cliente','Prestamo.Usuario')->where('libros.estado','=',false)->get();
-    return response()->json([
-        'Prestamos'=>$prestamo
-    ]);
-    
-}
-
-
-public function listadoUC(){
-
-    $clientes=Cliente::all();
-    $usuarios=Usuario::where('rol_id','=', 2)->get();
-
+        $prestamo->fechaRealDevolucion = $request->fechaRealDevolucion;
+        $prestamo->save();
 
         return response()->json([
-            
-            'clientes'=>$clientes,
-            'usuarios'=>$usuarios
+            'message' => 'Libro devuelto con éxito'
+        ]); */
+    }
+
+    public function listado()
+    {
+
+        $prestamo = Libro::with('Prestamo.Cliente', 'Prestamo.Usuario')->where('libros.estado', '=', false)->get();
+        return response()->json([
+            'Prestamos' => $prestamo
         ]);
-        
+    }
+
+
+    public function listadoUC()
+    {
+
+        $clientes = Cliente::all();
+        $usuarios = Usuario::where('rol_id', '=', 2)->get();
+
+
+        return response()->json([
+
+            'clientes' => $clientes,
+            'usuarios' => $usuarios
+        ]);
     }
 
     public function update(Request $request,  $id)
     {
-       
     }
 
-    public function destroy( $id)
+    public function destroy($id)
     {
-      
     }
 }

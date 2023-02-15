@@ -17,20 +17,12 @@ return new class extends Migration
             $table->id();
             $table->date('fechaPrestamo');
             $table->date('fechaDevolucion');
-            $table->date('fechaRealDevolucion')->nullable();
-            $table->foreignId('libro_id')
-            ->constrained('libros')
-            ->cascadeOnUpdate()
-            ->cascadeOnDelete();
-            $table->foreignId('cliente_id')
-            ->constrained('clientes')
-            ->cascadeOnUpdate()
-            ->cascadeOnDelete();
-            $table->foreignId('usuario_id')
-            ->constrained('usuarios')
-            ->cascadeOnUpdate()
-            ->cascadeOnDelete();
-
+            $table->boolean('isReturn');
+            $table->boolean('isBorrowed');
+            //$table->date('fechaRealDevolucion')->nullable();
+            $table->foreignId('libro_id')->constrained('libros');
+            //$table->foreignId('cliente_id')->constrained('clientes')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('usuario_id')->constrained('usuarios');
         });
     }
 
