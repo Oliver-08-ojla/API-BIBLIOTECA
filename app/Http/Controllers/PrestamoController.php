@@ -96,9 +96,6 @@ class PrestamoController extends Controller
                 'messages'=>$messagesU
             ],500);
         } 
-
-
-
         $usuario = auth()->user();
 
         $cliente = Cliente::create([
@@ -145,27 +142,29 @@ class PrestamoController extends Controller
 
     public function bookLend($id)
     {
-
         $prestamo = Prestamo::with('Libro')
             ->where('usuario_id', '=', $id)->get();
+        return response()->json($prestamo);
+    }
 
+    public function booksLendAll(){
+        $prestamo = Prestamo::with('Libro','Usuario')->get();
         return response()->json($prestamo);
     }
 
 
-
-    public function show($id)
+    /* public function show($id)
     {
         $prestamo = Prestamo::with('Libro', 'Cliente', 'Usuario')->where('id', '=', $id)->get();
 
         return response()->json([
             'prestamos' => $prestamo
         ]);
-    }
+    } */
 
-    public function devolverLibro(Request $request, $id)
+    /* public function devolverLibro(Request $request, $id)
     {
-        /* $validator = Validator::make($request->only('fechaRealDevolucion'), $this->rulesPrestamo, $this->messagesU);
+        $validator = Validator::make($request->only('fechaRealDevolucion'), $this->rulesPrestamo, $this->messagesU);
         if ($validator->fails()) {
             $messagesU = $validator->messages();
             return response()->json([
@@ -184,10 +183,10 @@ class PrestamoController extends Controller
 
         return response()->json([
             'message' => 'Libro devuelto con éxito'
-        ]); */
-    }
+        ]); 
+    } */
 
-    public function listado()
+    /* public function listado()
     {
 
         $prestamo = Libro::with('Prestamo.Cliente', 'Prestamo.Usuario')->where('libros.estado', '=', false)->get();
@@ -217,5 +216,5 @@ class PrestamoController extends Controller
 
     public function destroy($id)
     {
-    }
+    } */
 }

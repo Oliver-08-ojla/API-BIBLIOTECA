@@ -2,11 +2,8 @@
 
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\LibroController;
-use App\Http\Controllers\LibrosController;
 use App\Http\Controllers\PrestamoController;
 use App\Http\Controllers\UsuarioController;
-use App\Models\Libro;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +26,7 @@ Route::resource('libros', LibroController::class);
 Route::resource('clientes', ClienteController::class);
 Route::resource('prestamos', PrestamoController::class);
 Route::get('prestamos/libros/user/{id}', [PrestamoController::class,'bookLend']);
+Route::get('prestamos/libros/admin', [PrestamoController::class,'booksLendAll']);
 
 
 /* Route::group(
