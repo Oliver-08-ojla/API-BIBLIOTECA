@@ -131,17 +131,16 @@ class PrestamoController extends Controller
             'usuario_id' => 'required',
             
         ]);
-        $pres = Prestamo::create([
-
+        Prestamo::create([
             'fechaDevolucion' => $validData['fechaDevolucion'],
             'fechaPrestamo' => $validData['fechaPrestamo'],
-            'usuario_id' => $validData['libro_id'],
-            'libro_id' => $validData['usuario_id'],
+            'usuario_id' => $validData['usuario_id'],
+            'libro_id' => $validData['libro_id'],
             'isBorrowed' => true,
             'isReturn' => false,
         ]);
 
-        return response()->json($pres);
+        return response()->json(['message' => 'Registrado'],200);
     }
 
     public function bookLend($id)
