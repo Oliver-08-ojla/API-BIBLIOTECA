@@ -143,13 +143,23 @@ class PrestamoController extends Controller
     public function bookLend($id)
     {
         $prestamo = Prestamo::with('Libro')
-            ->where('usuario_id', '=', $id)->get();
+            ->where('usuario_id', '=', $id)
+            ->where('isBorrowed',1)
+            ->get();
         return response()->json($prestamo);
     }
 
     public function booksLendAll(){
-        $prestamo = Prestamo::with('Libro','Usuario')->get();
+        $prestamo = Prestamo::with('Libro','Usuario')
+        ->where('isBorrowed',1)->get();
         return response()->json($prestamo);
+    }
+
+    public function lendBook($id){
+        $lend = Prestamo::find($id);
+        $lend->isBorrowed = false;
+        $lend->save();
+        return response()->json(['message' => 'Libro devuelto'],200);
     }
 
 
